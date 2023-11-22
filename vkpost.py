@@ -274,9 +274,14 @@ while True:
         time.sleep(120) 
 
     # ошибки присылаем админу
-    # в случае переполнения лимита вызывается исключение и бот будет перезапущен
+    # в случае переполнения лимита вызывается исключение и бот будет остановлен
+    # в случае недоступности серверов бот будет остановлен
     except Exception as e:
         print(e)
         bot.send_message(chat_id=ADMIN_CHAT_ID,text=e)
         if str(e) == "[29] Rate limit reached":
+            bot.send_message(chat_id=ADMIN_CHAT_ID,text='Бот остановлен')
+            raise
+        if str(e) == "Response code 502":
+            bot.send_message(chat_id=ADMIN_CHAT_ID,text='Бот остановлен')
             raise
